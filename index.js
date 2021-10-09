@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const net = require('net')
 
 const args = process.argv.slice(2)
 const ASN = args[0]
@@ -45,7 +46,10 @@ class Router {
 		for (relationship in networks) {
 			const [network, relation] = relationship.split('-')
 			console.log('Starting socket for', network, relation)
-			// sockets[network] = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+			const client = new net.Socket()
+			client.connect(network, () => {
+				console.log('connected')
+			}) // sockets[network] = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
 			// sockets[network].setblocking(0)
 			// sockets[network].connect(network)
 			relations[network] = relation
