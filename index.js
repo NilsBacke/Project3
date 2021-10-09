@@ -33,16 +33,16 @@ const PEER = 'peer'
 const PROV = 'prov'
 
 class Router {
-	routes = undefined
-	updates = undefined
-	relations = undefined
-	sockets = undefined
+	// routes = undefined
+	// updates = undefined
+	// relations = undefined
+	// sockets = undefined
 
 	constructor(networks) {
-		this.routes = []
-		this.updates = []
-		this.relations = {}
-		this.sockets = {}
+		const routes = []
+		const updates = []
+		const relations = {}
+		const sockets = {}
 		for (relationship in networks) {
 			const [network, relation] = relationship.split('-')
 			console.log('Starting socket for', network, relation)
