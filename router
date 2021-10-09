@@ -61,6 +61,7 @@ class Router:
             self.sockets[network] = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
             self.sockets[network].setblocking(0)
             self.sockets[network].connect(network)
+            print(self.sockets[network].recv(1024))
             self.relations[network] = relation
         return
 
