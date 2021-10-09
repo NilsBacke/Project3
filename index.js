@@ -43,7 +43,7 @@ class Router {
 		const updates = []
 		const relations = {}
 		const sockets = {}
-		for (relationship in networks) {
+		for (const relationship of networks) {
 			const [network, relation] = relationship.split('-')
 			console.log('Starting socket for', network, relation)
 			const client = new net.Socket()
