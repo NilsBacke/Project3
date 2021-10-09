@@ -150,25 +150,25 @@ class Router {
 	}
 
 	run() {
-		while (true) {
-			// const socks = select.select(self.sockets.values(), [], [], 0.1)[0]
-			for (conn of socks) {
-				// try:
-				//     k = conn.recv(65535)
-				// except:
-				//     # either died on a connection reset, or was SIGTERM's by parent
-				//     return
-				// if k:
-				//     for sock in self.sockets:
-				//         if self.sockets[sock] == conn:
-				//             srcif = sock
-				//     msg = json.loads(k)
-				//     if not self.handle_packet(srcif, msg):
-				//         self.send_error(conn, msg)
-				// else:
-				//     return
-			}
-		}
+		// while (true) {
+		// const socks = select.select(self.sockets.values(), [], [], 0.1)[0]
+		// for (conn of socks) {
+		// try:
+		//     k = conn.recv(65535)
+		// except:
+		//     # either died on a connection reset, or was SIGTERM's by parent
+		//     return
+		// if k:
+		//     for sock in self.sockets:
+		//         if self.sockets[sock] == conn:
+		//             srcif = sock
+		//     msg = json.loads(k)
+		//     if not self.handle_packet(srcif, msg):
+		//         self.send_error(conn, msg)
+		// else:
+		//     return
+		// }
+		// }
 	}
 }
 
