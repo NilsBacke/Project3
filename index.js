@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const net = require('net')
 const fs = require('fs')
-const ipc = require('ipc')
+const ipc = require('node-ipc')
 
 const args = process.argv.slice(2)
 const ASN = args[0]
