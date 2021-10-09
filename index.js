@@ -46,8 +46,8 @@ class Router {
 		for (const relationship of networks) {
 			const [network, relation] = relationship.split('-')
 			console.log('Starting socket for', network, relation)
-			const client = new net.Socket()
-			client.connect(network, () => {
+			// const client = new net.Socket()
+			const client = net.createConnection({ path: network }, () => {
 				console.log('connected')
 			})
 			client.on('error', (error) => {
