@@ -39,10 +39,10 @@ class Router {
 	sockets = undefined
 
 	constructor(networks) {
-		routes = []
-		updates = []
-		relations = {}
-		sockets = {}
+		this.routes = []
+		this.updates = []
+		this.relations = {}
+		this.sockets = {}
 		for (relationship in networks) {
 			const [network, relation] = relationship.split('-')
 			console.log('Starting socket for', network, relation)
