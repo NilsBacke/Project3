@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const net = require('net')
+const fs = require('fs')
 
 const args = process.argv.slice(2)
 const ASN = args[0]
@@ -43,6 +44,9 @@ class Router {
 		const updates = []
 		const relations = {}
 		const sockets = {}
+		fs.readdirSync('.').forEach((file) => {
+			console.log(file)
+		})
 		for (const relationship of networks) {
 			const [network, relation] = relationship.split('-')
 			console.log('Starting socket for', network, relation)
