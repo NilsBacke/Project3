@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const net = require('net')
 const fs = require('fs')
+const ipc = require('ipc')
 
 const args = process.argv.slice(2)
 const ASN = args[0]
@@ -51,12 +52,15 @@ class Router {
 			const [network, relation] = relationship.split('-')
 			console.log('Starting socket for', network, relation)
 			// const client = new net.Socket()
-			const client = net.createConnection({ path: network }, () => {
+			const client = ipc.connectTo(network, network, () => {
 				console.log('connected')
 			})
-			client.on('error', (error) => {
-				console.log('error', error)
-			})
+			// const client = net.createConnection({ path: network }, () => {
+			// 	console.log('connected')
+			// })
+			// client.on('error', (error) => {
+			// 	console.log('error', error)
+			// })
 
 			// sockets[network] = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
 			// sockets[network].setblocking(0)
