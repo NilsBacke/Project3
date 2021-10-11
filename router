@@ -75,7 +75,12 @@ class Router:
             for i in range(0, num255):
                 if network_split[i] != daddr_split[i]:
                    is_valid = False
-                   break       
+                   break 
+            print('lookup_routes')
+            print(num255)
+            print(network_split)
+            print(daddr_split)
+            print(is_valid)
             if is_valid:
                 outroutes.append(entry) 
         return outroutes
