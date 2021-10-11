@@ -192,6 +192,8 @@ class Router:
             "type": "table",
             "msg": self.routes
         }
+        print('dump message')
+        print(json.dumps(msg))
         self.sockets[packet['src']].send(json.dumps(msg).encode())
         return True
 
@@ -205,8 +207,6 @@ class Router:
             self.forward(srcif, packet)
         elif type == 'dump':
             self.dump(packet)
-        elif type == 'wait':
-            print('wait received')
         return True
 
     def send_error(self, conn, msg):
