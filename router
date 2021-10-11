@@ -167,9 +167,10 @@ class Router:
         # 3. potentially send copies of the announcement to neighboring routers
         try:
             for ip in self.sockets.keys():
-                sock = self.sockets[ip]
-                sock.send(json.dumps(packet).encode())
-                # send to all
+                if ip != srcif:
+                    sock = self.sockets[ip]
+                    sock.send(json.dumps(packet).encode())
+                    # send to all others
             return True
         except:
             return False  
