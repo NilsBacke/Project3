@@ -164,12 +164,12 @@ class Router:
         try:
             msg = packet
             msg['msg']['ASPath'].insert(0, int(args.asn))
-            msg['src'] = msg['dst']
-            msg['dst'] = srcif
             for ip in self.sockets.keys():
                 if ip != srcif:
                     print('SENDING')
                     sock = self.sockets[ip]
+                    msg['src'] = msg['dst']
+                    msg['dst'] = ip
                     sock.send(json.dumps(msg).encode())
                     # send to all others
             return True
