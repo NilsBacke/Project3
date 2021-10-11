@@ -133,7 +133,7 @@ class Router:
             routes = self.filter_relationships(srcif, routes)
         print('get_routes routes length:')
         print(len(routes))
-        peer = routes[0] if len(routes) != 0 else None
+        peer = routes[0]['peer'] if len(routes) != 0 else None
         return self.sockets[peer] if peer else None
 
     def forward(self, srcif, packet):
