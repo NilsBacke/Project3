@@ -136,12 +136,12 @@ class Router:
         if sock == None:
             self.sockets[srcif].send(json.dumps({
                 "src": srcif,
-                # "dst": packet['src'],
-                "dst": 'hello',
+                "dst": packet['src'],
                 "type": "no route",
                 "msg": {}
             }).encode())
         else:
+            packet['dst'] = 'hello'
             sock.send(json.dumps(packet).encode())
         return False
 
