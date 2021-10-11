@@ -143,9 +143,9 @@ class Router:
                 "dst": packet['src'],
                 "type": "no route",
                 "msg": {}
-            }))
+            }).encode())
         else:
-            sock.send(json.dumps(packet))
+            sock.send(json.dumps(packet).encode())
         return False
 
     def coalesce(self):
@@ -168,7 +168,7 @@ class Router:
         try:
             for ip in self.sockets.keys():
                 sock = self.sockets[ip]
-                sock.send(json.dumps(packet))
+                sock.send(json.dumps(packet).encode())
                 # send to all
             return True
         except:
@@ -190,7 +190,7 @@ class Router:
         }
         print('dump message')
         print(json.dumps(msg))
-        self.sockets[packet['src']].send(json.dumps(msg))
+        self.sockets[packet['src']].send(json.dumps(msg).encode())
         return True
 
     def handle_packet(self, srcif, packet):
