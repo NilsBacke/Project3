@@ -135,7 +135,7 @@ class Router:
         sock = self.get_route(srcif, packet['dst'])
         if sock == None:
             self.sockets[srcif].send(json.dumps({
-                "src": srcif,
+                "src": '118.0.0.0',
                 "dst": packet['src'],
                 "type": "no route",
                 "msg": {}
@@ -207,8 +207,7 @@ class Router:
         if type == 'update':
             self.update(srcif, packet)
         elif type == 'data':
-            # self.forward(srcif, packet)
-            pass
+            self.forward(srcif, packet)
         elif type == 'dump':
             self.dump(packet)
         return True
