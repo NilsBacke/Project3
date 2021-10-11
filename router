@@ -169,7 +169,11 @@ class Router:
             for ip in self.sockets.keys():
                 if ip != srcif:
                     sock = self.sockets[ip]
-                    sock.send(json.dumps(packet).encode())
+                    msg = packet
+                    msg['msg']['ASPath'] = msg['msg']['ASPath'].append(int(args.asn))
+                    print('message that we send copies of')
+                    print(json.dumps(msg))
+                    sock.send(json.dumps(msg).encode())
                     # send to all others
             return True
         except:
