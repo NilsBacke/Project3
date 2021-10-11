@@ -170,12 +170,15 @@ class Router:
     def dump(self, packet):
         # packet is already decoded
         """	handles dump table requests	"""
-        self.sockets[packet['src']].send({
+        msg = {
             "src":  packet['dst'], 
             "dst":  packet['src'], 
             "type": "table",
             "msg": self.routes
-        })
+        }
+        print('dump message')
+        print(msg)
+        self.sockets[packet['src']].send(msg)
         return True
 
     def handle_packet(self, srcif, packet):
