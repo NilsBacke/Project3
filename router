@@ -131,9 +131,25 @@ class Router:
         return False
 
     def update(self, srcif, packet):
+        # packet is already decoded
         """	handle update packets	"""
-        # TODO 
-        return False
+        # 1. save a copy of the announcement in case you need it later
+        self.updates.append(packet)
+        # 2. add an entry to your forwarding table
+        self.routes.append({
+            "network": packet['msg']['network'],
+            "netmask": packet['msg']['netmask'],
+            "peer": packet['src']
+        })
+        # 3. potentially send copies of the announcement to neighboring routers
+        try:
+            for ip in self.sockets.keys():
+                sock = self.sockets[ip]
+                sock.send(json.dumps(packet.encode()))
+                # send to all
+            return True
+        except:
+            return False  
     
     def revoke(self, packet):
         """	handle revoke packets	"""
@@ -148,8 +164,10 @@ class Router:
     def handle_packet(self, srcif, packet):
         """	dispatches a packet """
         # TODO
-        print(srcif)
-        print(packet)
+        packet = packet.decode()
+        type = packet['type']
+        if type == 'update':
+            self.update(srcif, packet)
         return False
 
     def send_error(self, conn, msg):
