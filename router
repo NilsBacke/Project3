@@ -207,7 +207,8 @@ class Router:
         if type == 'update':
             self.update(srcif, packet)
         elif type == 'data':
-            self.forward(srcif, packet)
+            # self.forward(srcif, packet)
+            pass
         elif type == 'dump':
             self.dump(packet)
         return True
