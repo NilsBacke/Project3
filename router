@@ -180,8 +180,7 @@ class Router:
 
     def handle_packet(self, srcif, packet):
         """	dispatches a packet """
-        # TODO
-        packet = packet.decode()
+        # packet = packet.decode()
         type = packet['type']
         if type == 'update':
             self.update(srcif, packet)
