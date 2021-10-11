@@ -135,8 +135,9 @@ class Router:
         sock = self.get_route(srcif, packet['dst'])
         if sock == None:
             self.sockets[srcif].send(json.dumps({
-                "src": '118.0.0.0',
-                "dst": packet['src'],
+                "src": srcif,
+                # "dst": packet['src'],
+                "dst": 'hello',
                 "type": "no route",
                 "msg": {}
             }).encode())
