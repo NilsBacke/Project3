@@ -205,7 +205,9 @@ class Router:
             self.forward(srcif, packet)
         elif type == 'dump':
             self.dump(packet)
-        return False
+        elif type == 'wait':
+            print('wait received')
+        return True
 
     def send_error(self, conn, msg):
         """ Send a no_route error message """
