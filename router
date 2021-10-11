@@ -162,18 +162,18 @@ class Router:
         })
         # 3. potentially send copies of the announcement to neighboring routers
         try:
-            msg = packet
-            msg['msg']['ASPath'].insert(0, int(args.asn))
-            for ip in self.sockets.keys():
-                if ip != srcif:
-                    print('SENDING')
-                    sock = self.sockets[ip]
-                    msg['src'] = ip
-                    msg['src'][-1] = '2'
-                    msg['dst'] = ip
-                    msg['dst'][-1] = '1'
-                    sock.send(json.dumps(msg).encode())
-                    # send to all others
+            # msg = packet
+            # msg['msg']['ASPath'].insert(0, int(args.asn))
+            # for ip in self.sockets.keys():
+            #     if ip != srcif:
+            #         print('SENDING')
+            #         sock = self.sockets[ip]
+            #         msg['src'] = ip
+            #         msg['src'][-1] = '2'
+            #         msg['dst'] = ip
+            #         msg['dst'][-1] = '1'
+            #         sock.send(json.dumps(msg).encode())
+            #         # send to all others
             return True
         except:
             return False  
