@@ -167,7 +167,7 @@ class Router:
                     print('SENDING')
                     sock = self.sockets[ip]
                     msg = packet
-                    msg['msg']['ASPath'].append(int(args.asn))
+                    msg['msg']['ASPath'].insert(0, int(args.asn))
                     sock.send(json.dumps(msg).encode())
                     # send to all others
             return True
