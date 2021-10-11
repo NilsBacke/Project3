@@ -75,12 +75,7 @@ class Router:
             for i in range(0, num255):
                 if network_split[i] != daddr_split[i]:
                    is_valid = False
-                   break 
-            print('lookup_routes')
-            print(num255)
-            print(network_split)
-            print(daddr_split)
-            print(is_valid)
+                   break
             if is_valid:
                 outroutes.append(entry) 
         return outroutes
@@ -131,8 +126,6 @@ class Router:
             # TODO
             # Final check: enforce peering relationships
             routes = self.filter_relationships(srcif, routes)
-        print('get_routes routes length:')
-        print(len(routes))
         peer = routes[0]['peer'] if len(routes) != 0 else None
         return self.sockets[peer] if peer else None
 
@@ -169,12 +162,12 @@ class Router:
         })
         # 3. potentially send copies of the announcement to neighboring routers
         try:
-            # for ip in self.sockets.keys():
-            #     if ip != srcif:
-            #         sock = self.sockets[ip]
-            #         msg = packet
-            #         msg['msg']['ASPath'].append(int(args.asn))
-            #         sock.send(json.dumps(msg).encode())
+            for ip in self.sockets.keys():
+                if ip != srcif:
+                    sock = self.sockets[ip]
+                    msg = packet
+                    msg['msg']['ASPath'].append(int(args.asn))
+                    sock.send(json.dumps(msg).encode())
                     # send to all others
             return True
         except:
@@ -194,8 +187,6 @@ class Router:
             "type": "table",
             "msg": self.routes
         }
-        print('dump message')
-        print(json.dumps(msg))
         self.sockets[packet['src']].send(json.dumps(msg).encode())
         return True
 
