@@ -148,6 +148,8 @@ class Router:
     def handle_packet(self, srcif, packet):
         """	dispatches a packet """
         # TODO
+        print(srcif)
+        print(packet)
         return False
 
     def send_error(self, conn, msg):
