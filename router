@@ -165,7 +165,7 @@ class Router:
         # 3. potentially send copies of the announcement to neighboring routers
         try:
             msg = packet
-            msg['msg']['ASPath'].insert(0, int(args.asn))
+            # msg['msg']['ASPath'].insert(0, int(args.asn))
             for ip in self.sockets.keys():
                 if ip != srcif:
                     print('SENDING')
