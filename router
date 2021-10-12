@@ -171,9 +171,9 @@ class Router:
             if ip != srcif:
                 print('SENDING')
                 sock = self.sockets[ip]
-                msg['src'] = packet['dst'][:-1]
+                msg['src'] = packet['src'][:-1]
                 msg['src'] += '2'
-                msg['dst'] = packet['src'][:-1]
+                msg['dst'] = packet['dst'][:-1]
                 msg['dst'] += '1'
                 try:
                     sock.send(json.dumps(msg).encode())
