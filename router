@@ -168,7 +168,7 @@ class Router:
         # msg['msg']['ASPath'].append(int(args.asn))
         for ip in self.sockets.keys():
             # send to all others
-            if ip != srcif:
+            if ip == srcif:
                 print('SENDING')
                 sock = self.sockets[ip]
                 msg['src'] = packet['src'][:-1]
