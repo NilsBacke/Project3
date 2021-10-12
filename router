@@ -170,7 +170,7 @@ class Router:
             if ip != srcif:
                 print('SENDING')
                 sock = self.sockets[ip]
-                msg['src'] = ip[:-1]
+                msg['src'] = packet['dst'][:-1]
                 msg['src'] += '2'
                 msg['dst'] = ip[:-1]
                 msg['dst'] += '1'
