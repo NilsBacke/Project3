@@ -173,10 +173,10 @@ class Router:
                 sock = self.sockets[ip]
                 msg['src'] = packet['src']
                 msg['dst'] = packet['dst']
-                # try:
-                #     sock.send(json.dumps(msg).encode())
-                # except Exception as e:
-                #     print(e)
+                try:
+                    sock.send(json.dumps(msg).encode())
+                except Exception as e:
+                    print(e)
         return True
     
     def revoke(self, packet):
