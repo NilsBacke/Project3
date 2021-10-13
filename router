@@ -170,7 +170,9 @@ class Router:
             # send to all others
             if ip != srcif:
                 print('SENDING')
-                sock = self.sockets[ip]
+                new_ip = ip[:-1]
+                new_ip += '1'
+                sock = self.sockets[new_ip]
                 msg['src'] = packet['dst']
                 msg['dst'] = ip
                 try:
