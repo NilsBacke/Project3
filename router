@@ -134,7 +134,6 @@ class Router:
         """	Forward a data packet	"""
         sock = self.get_route(srcif, packet['dst'])
         if sock == None:
-            print("Sent no route")
             self.sockets[srcif].send(json.dumps({
                 "src": srcif,
                 "dst": packet['src'],
@@ -142,7 +141,6 @@ class Router:
                 "msg": {}
             }).encode())
         else:
-            print("Sent data packet")
             sock.send(json.dumps(packet).encode())
         return False
 
@@ -169,7 +167,6 @@ class Router:
         for ip in self.sockets.keys():
             # send to all others
             if ip != srcif:
-                print('SENDING')
                 sock = self.sockets[ip]
                 msg['src'] = ip[:-1]
                 msg['src'] += '1'
@@ -194,8 +191,6 @@ class Router:
             "type": "table",
             "msg": self.routes
         }
-        print('dump message')
-        print(json.dumps(msg))
         self.sockets[packet['src']].send(json.dumps(msg).encode())
         return True
 
