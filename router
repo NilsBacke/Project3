@@ -54,10 +54,9 @@ class Router:
         self.updates = []
         self.relations = {}
         self.sockets = {}
+        # Create Unix sockets for each connected neighbor.
         for relationship in networks:
             network, relation = relationship.split("-")
-            if DEBUG: 
-                print("Starting socket for", network, relation)
             self.sockets[network] = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
             self.sockets[network].setblocking(0)
             self.sockets[network].connect(network)
@@ -68,10 +67,12 @@ class Router:
         """ Lookup all valid routes for an address """
         outroutes = []
         for entry in self.routes:
+            # Parse netmasks to perform masking operations.
             num255 = entry['netmask'].count('255')
             network_split = entry['network'].split('.')
             daddr_split = daddr.split('.')
             is_valid = True
+            # Iterate through mask to determine ip matching.
             for i in range(0, num255):
                 if network_split[i] != daddr_split[i]:
                    is_valid = False
@@ -132,15 +133,18 @@ class Router:
     def forward(self, srcif, packet):
         # packet is already decoded
         """	Forward a data packet	"""
-        sock = self.get_route(srcif, packet['dst'])
+        # GEt correct route.
+        sock = self.get_route(srcif, packet[DEST])
+        # If no route available, send to no route message back
         if sock == None:
             self.sockets[srcif].send(json.dumps({
-                "src": srcif,
-                "dst": packet['src'],
-                "type": "no route",
-                "msg": {}
+                SRCE: srcif,
+                DEST: packet[SRCE],
+                TYPE: NRTE,
+                MESG: {}
             }).encode())
         else:
+            # If socket is available, send to proper neighbor.
             sock.send(json.dumps(packet).encode())
         return False
 
@@ -156,21 +160,21 @@ class Router:
         self.updates.append(packet)
         # 2. add an entry to your forwarding table
         self.routes.append({
-            "network": packet['msg']['network'],
-            "netmask": packet['msg']['netmask'],
-            "peer": packet['src']
+            NTWK: packet[MESG][NTWK],
+            NMSK: packet[MESG][NMSK],
+            PEER: packet[SRCE]
         })
         # 3. potentially send copies of the announcement to neighboring routers
         msg = packet
-        # msg['msg']['ASPath'].insert(0, int(args.asn))
-        msg['msg']['ASPath'].append(int(args.asn))
+        # Add aspath to update packet.
+        msg[MESG][APTH].append(int(args.asn))
         for ip in self.sockets.keys():
             # send to all others
             if ip != srcif:
                 sock = self.sockets[ip]
-                msg['src'] = ip[:-1]
-                msg['src'] += '1'
-                msg['dst'] = ip
+                msg[SRCE] = ip[:-1]
+                msg[SRCE] += '1'
+                msg[DEST] = ip
                 try:
                     sock.send(json.dumps(msg).encode())
                 except Exception as e:
@@ -186,23 +190,23 @@ class Router:
         # packet is already decoded
         """	handles dump table requests	"""
         msg = {
-            "src":  packet['dst'], 
-            "dst":  packet['src'], 
-            "type": "table",
-            "msg": self.routes
+            SRCE:  packet[DEST], 
+            DEST:  packet[SRCE], 
+            TYPE: TABLE,
+            MESG: self.routes
         }
-        self.sockets[packet['src']].send(json.dumps(msg).encode())
+        self.sockets[packet[SRCE]].send(json.dumps(msg).encode())
         return True
 
     def handle_packet(self, srcif, packet):
         """	dispatches a packet """
-        # packet = packet.decode()
-        type = packet['type']
-        if type == 'update':
+        # Handle different types of packet.
+        type = packet[TYPE]
+        if type == UPDT:
             self.update(srcif, packet)
-        elif type == 'data':
+        elif type == DATA:
             self.forward(srcif, packet)
-        elif type == 'dump':
+        elif type == DUMP:
             self.dump(packet)
         return True
 
@@ -214,6 +218,7 @@ class Router:
 
     def run(self):
         while True:
+            # Read all sockets to read incoming data.
             socks = select.select(self.sockets.values(), [], [], 0.1)[0]
             for conn in socks:
                 try:
@@ -222,11 +227,12 @@ class Router:
                     # either died on a connection reset, or was SIGTERM's by parent
                     return
                 if k:
-                    print(k)
+                    # Load message into memory for processing.
                     for sock in self.sockets:
                         if self.sockets[sock] == conn:
                             srcif = sock
                     msg = json.loads(k)
+                    # Send error if packet caused an error.
                     if not self.handle_packet(srcif, msg):
                         self.send_error(conn, msg)
                 else:
