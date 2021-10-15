@@ -192,7 +192,7 @@ class Router:
         msg = {
             SRCE:  packet[DEST], 
             DEST:  packet[SRCE], 
-            TYPE: TABLE,
+            TYPE: TABL,
             MESG: self.routes
         }
         self.sockets[packet[SRCE]].send(json.dumps(msg).encode())
