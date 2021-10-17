@@ -101,7 +101,7 @@ class Router:
     def get_self_origin(self, routes):
         """ select self originating routes """
         outroutes = routes.copy()
-        outroutes = filter(lambda r: r[MESG][SORG])
+        outroutes = filter(lambda r: r[MESG][SORG], outroutes)
         return outroutes
 
     # IGP > EGP > UNK
