@@ -126,7 +126,13 @@ class Router:
 
     def filter_relationships(self, srcif, routes):
         """ Don't allow Peer->Peer, Peer->Prov, or Prov->Peer forwards """
-        outroutes = list(filter(lambda r: self.relations[srcif] == CUST or self.relations[r[DEST]] == CUST, routes))
+        def filt(route):
+            dst = route[DEST][:-1]
+            dst += '2'
+            return self.relations[srcif] == CUST or self.relations[dst] == CUST
+
+        outroutes = routes.copy()
+        outroutes = list(filter(filt, outroutes))
         return outroutes
 
     def get_route(self, srcif, daddr):
