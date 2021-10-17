@@ -103,6 +103,7 @@ class Router:
         """ select self originating routes """
         outroutes = routes.copy()
         outroutes = list(filter(lambda r: r[MESG][SORG], outroutes))
+        # handle edge case if all outroutes' selfOrigin is false
         if len(outroutes) == 0:
             return routes.copy()
         return outroutes
