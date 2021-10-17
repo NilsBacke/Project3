@@ -202,11 +202,15 @@ class Router:
         print('peer_or_prov')
         print(peer_or_prov)
 
+        def temp(n):
+            print(n)
+            return self.relations[n]
+
         neighbors = self.sockets.keys()
         print('neighbors prior')
         print(len(neighbors))
         if peer_or_prov:
-            neighbors = list(filter(lambda n: self.relations[n], neighbors))
+            neighbors = list(filter(temp, neighbors))
 
         print('neighbors post')
         print(len(neighbors))
