@@ -79,6 +79,10 @@ class Router:
                    break
             if is_valid:
                 outroutes.append(entry) 
+
+        outroutes.sort(key=lambda r: r['netmask'].count('255'), reverse=True)
+        longest_matching_prefix = outroutes[0]['netmask'].count('255')
+        outroutes = list(filter(lambda r: r['netmask'].count('255') == longest_matching_prefix, outroutes))
         return outroutes
 
     def get_shortest_as_path(self, routes):
