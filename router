@@ -194,23 +194,18 @@ class Router:
         # relation_src = srcif[:-1]
         # relation_src += '0'
         relation = self.relations[srcif]
-        peer_or_prov = relation == 'peer' or relation == 'prov'
+        peer_or_prov = relation == PEER or relation == PROV
 
         print('relations')
         print(self.relations)
 
         print('peer_or_prov')
         print(peer_or_prov)
-
-        def temp(n):
-            print(n)
-            return self.relations[n]
-
         neighbors = self.sockets.keys()
         print('neighbors prior')
         print(len(neighbors))
         if peer_or_prov:
-            neighbors = list(filter(temp, neighbors))
+            neighbors = list(filter(lambda n: self.relations[n] == CUST, neighbors))
 
         print('neighbors post')
         print(len(neighbors))
