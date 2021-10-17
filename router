@@ -190,10 +190,28 @@ class Router:
             **packet
         })
         # 3. potentially send copies of the announcement to neighboring routers
+
+        relation_src = srcif[:-1]
+        relation_src += '0'
+        relation = self.relations[relation_src]
+        peer_or_prov = relation == 'peer' or relation == 'prov'
+
+        print('peer_or_prov')
+        print(peer_or_prov)
+
+        neighbors = self.sockets.keys()
+        print('neighbors prior')
+        print(len(neighbors))
+        if peer_or_prov:
+            neighbors = list(filter(lambda n: self.relations[n], neighbors))
+            
+        print('neighbors post')
+        print(len(neighbors))
+
         msg = packet
         # Add aspath to update packet.
         msg[MESG][APTH].append(int(args.asn))
-        for ip in self.sockets.keys():
+        for ip in neighbors:
             # send to all others
             if ip != srcif:
                 sock = self.sockets[ip]
