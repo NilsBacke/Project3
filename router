@@ -178,6 +178,7 @@ class Router:
         sock = self.get_route(srcif, packet[DEST])
         # If no route available, send to no route message back
         if sock == None:
+            print('sending no route')
             send_no_route()
         else:
             # If socket is available, send to proper neighbor.
