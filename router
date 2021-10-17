@@ -78,6 +78,10 @@ class Router:
                    is_valid = False
                    break
             if is_valid:
+                print('adding')
+                print(entry)
+                print('because of')
+                print(daddr)
                 outroutes.append(entry) 
         return outroutes
 
