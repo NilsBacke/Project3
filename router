@@ -126,8 +126,8 @@ class Router:
 
     def filter_relationships(self, srcif, routes):
         """ Don't allow Peer->Peer, Peer->Prov, or Prov->Peer forwards """
-        outroutes = []
-        return routes
+        outroutes = list(filter(lambda r: self.relations[srcif] == CUST or self.relations[r[DEST]] == CUST, routes))
+        return outroutes
 
     def get_route(self, srcif, daddr):
         """	Select the best route for a given address	"""
@@ -171,13 +171,7 @@ class Router:
             send_no_route()
         else:
             # If socket is available, send to proper neighbor.
-            print(packet)
-            should_forward = self.relations[srcif] == CUST or self.relations[packet[DEST]] == CUST
-
-            if should_forward:
-                sock.send(json.dumps(packet).encode())
-            else:
-                send_no_route()
+            sock.send(json.dumps(packet).encode())
         return False
 
     def coalesce(self):
