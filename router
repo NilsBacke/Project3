@@ -102,7 +102,7 @@ class Router:
     def get_self_origin(self, routes):
         """ select self originating routes """
         outroutes = routes.copy()
-        print(map(lambda r: r[MESG][SORG], outroutes))
+        print(list(map(lambda r: r[MESG][SORG], outroutes)))
         outroutes = list(filter(lambda r: r[MESG][SORG], outroutes))
         print('outroutes in get self origin')
         print(outroutes)
@@ -226,12 +226,12 @@ class Router:
             SRCE:  packet[DEST], 
             DEST:  packet[SRCE], 
             TYPE: TABL,
-            MESG: map(lambda r: ({ 
+            MESG: list(map(lambda r: ({ 
                 NTWK: r[MESG][NTWK],
                 NMSK: r[MESG][NMSK],
                 PEER: r[SRCE],
                 }),
-                self.routes)
+                self.routes))
         }
         self.sockets[packet[SRCE]].send(json.dumps(msg).encode())
         return True
