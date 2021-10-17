@@ -129,8 +129,6 @@ class Router:
         def filt(route):
             dst = route[DEST][:-1]
             dst += '2'
-            print('srcif', srcif)
-            print('dst', dst)
             return self.relations[srcif] == CUST or self.relations[dst] == CUST
 
         outroutes = routes.copy()
@@ -175,12 +173,9 @@ class Router:
                 MESG: {}
             }).encode())
         # GEt correct route.
-        print('DATA PACKET')
-        print(packet)
         sock = self.get_route(srcif, packet[DEST])
         # If no route available, send to no route message back
         if sock == None:
-            print('sending no route')
             send_no_route()
         else:
             # If socket is available, send to proper neighbor.
