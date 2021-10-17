@@ -191,9 +191,9 @@ class Router:
         })
         # 3. potentially send copies of the announcement to neighboring routers
 
-        relation_src = srcif[:-1]
-        relation_src += '0'
-        relation = self.relations[relation_src]
+        # relation_src = srcif[:-1]
+        # relation_src += '0'
+        relation = self.relations[srcif]
         peer_or_prov = relation == 'peer' or relation == 'prov'
 
         print('peer_or_prov')
@@ -204,7 +204,7 @@ class Router:
         print(len(neighbors))
         if peer_or_prov:
             neighbors = list(filter(lambda n: self.relations[n], neighbors))
-            
+
         print('neighbors post')
         print(len(neighbors))
 
