@@ -196,6 +196,9 @@ class Router:
         relation = self.relations[srcif]
         peer_or_prov = relation == 'peer' or relation == 'prov'
 
+        print('relations')
+        print(self.relations)
+
         print('peer_or_prov')
         print(peer_or_prov)
 
