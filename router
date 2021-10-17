@@ -95,8 +95,6 @@ class Router:
         outroutes.sort(reverse=True, key=lambda r: r[MESG][LPRF])
         highest = outroutes[0][MESG][LPRF]
         outroutes = list(filter(lambda r: r[MESG][LPRF] == highest, outroutes))
-        print('outroutes in get highest preference')
-        print(outroutes)
         return outroutes
          
     def get_self_origin(self, routes):
@@ -124,8 +122,6 @@ class Router:
         outroutes.sort(reverse=True, key=self.sortOrigins)
         highest = outroutes[0][MESG][ORIG]
         outroutes = list(filter(lambda r: r[MESG][ORIG] == highest, outroutes))
-        print('outroutes in get origin routes')
-        print(outroutes)
         return outroutes
 
     def filter_relationships(self, srcif, routes):
@@ -163,10 +159,6 @@ class Router:
         """	Forward a data packet	"""
         # GEt correct route.
         sock = self.get_route(srcif, packet[DEST])
-        print("FORWARDING")
-        print(packet)
-        print(sock)
-        print("END FORWARDING")
         # If no route available, send to no route message back
         if sock == None:
             self.sockets[srcif].send(json.dumps({
