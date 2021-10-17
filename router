@@ -209,7 +209,7 @@ class Router:
     def revoke_filter(self, item, packet):
         is_valid = True
         for msg in packet[MESG]:
-            if msg[NTWK] == item[NTWK] and msg[NMSK] == item[NMSK]:
+            if msg[NTWK] == item[NTWK] and msg[NMSK] == item[NMSK] and packet[SRCE] == item[SRCE]:
                 # matches revoke message, remove from forwarding table
                 is_valid = False
                 break
