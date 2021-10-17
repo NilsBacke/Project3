@@ -166,8 +166,10 @@ class Router:
         # packet is already decoded
         """	Forward a data packet	"""
         def send_no_route():
+            send_src = srcif[:-1]
+            send_src += '1'
             self.sockets[srcif].send(json.dumps({
-                SRCE: srcif,
+                SRCE: send_src,
                 DEST: packet[SRCE],
                 TYPE: NRTE,
                 MESG: {}
