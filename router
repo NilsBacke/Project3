@@ -167,8 +167,8 @@ class Router:
         """	Forward a data packet	"""
         def send_no_route():
             self.sockets[srcif].send(json.dumps({
-                SRCE: packet[SRCE],
-                DEST: packet[DEST],
+                SRCE: srcif,
+                DEST: packet[SRCE],
                 TYPE: NRTE,
                 MESG: {}
             }).encode())
