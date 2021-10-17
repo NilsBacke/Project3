@@ -87,7 +87,7 @@ class Router:
         outroutes = routes.copy()
         outroutes.sort(key=lambda r: len(r[MESG][APTH]))
         lowest = outroutes[0][MESG][APTH]
-        outroutes = filter(lambda r: len(r[MESG][APTH]) == lowest, outroutes)
+        outroutes = list(filter(lambda r: len(r[MESG][APTH]) == lowest, outroutes))
         return outroutes
             
     def get_highest_preference(self, routes):
@@ -95,13 +95,13 @@ class Router:
         outroutes = routes.copy()
         outroutes.sort(reverse=True, key=lambda r: r[MESG][LPRF])
         highest = outroutes[0][MESG][LPRF]
-        outroutes = filter(lambda r: r[MESG][LPRF] == highest, outroutes)
+        outroutes = list(filter(lambda r: r[MESG][LPRF] == highest, outroutes))
         return outroutes
          
     def get_self_origin(self, routes):
         """ select self originating routes """
         outroutes = routes.copy()
-        outroutes = filter(lambda r: r[MESG][SORG], outroutes)
+        outroutes = list(filter(lambda r: r[MESG][SORG], outroutes))
         return outroutes
 
     # IGP > EGP > UNK
@@ -119,7 +119,7 @@ class Router:
         outroutes = routes.copy()
         outroutes.sort(reverse=True, key=self.sortOrigins)
         highest = outroutes[0][MESG][ORIG]
-        outroutes = filter(lambda r: r[MESG][ORIG] == highest, outroutes)
+        outroutes = list(filter(lambda r: r[MESG][ORIG] == highest, outroutes))
         return outroutes
 
     def filter_relationships(self, srcif, routes):
