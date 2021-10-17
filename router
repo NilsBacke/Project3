@@ -171,6 +171,7 @@ class Router:
             send_no_route()
         else:
             # If socket is available, send to proper neighbor.
+            print(packet)
             should_forward = self.relations[srcif] == CUST or self.relations[packet[DEST]] == CUST
 
             if should_forward:
