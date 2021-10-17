@@ -84,24 +84,43 @@ class Router:
     def get_shortest_as_path(self, routes):
         """ select the route with the shortest AS Path """
         # TODO
-        outroutes = []
-        return routes
+        outroutes = routes.copy()
+        outroutes.sort(key=lambda r: len(r[MESG][APTH]))
+        lowest = outroutes[0][MESG][APTH]
+        outroutes = filter(lambda r: len(r[MESG][APTH]) == lowest, outroutes)
+        return outroutes
             
     def get_highest_preference(self, routes):
-        """ select the route with the shortest AS Path """
-        outroutes = []
-        return routes
+        """ select the route with the highest localPref """
+        outroutes = routes.copy()
+        outroutes.sort(reverse=True, key=lambda r: r[MESG][LPRF])
+        highest = outroutes[0][MESG][LPRF]
+        outroutes = filter(lambda r: r[MESG][LPRF] == highest, outroutes)
+        return outroutes
          
     def get_self_origin(self, routes):
         """ select self originating routes """
-        # TODO
-        return routes
+        outroutes = routes.copy()
+        outroutes = filter(lambda r: r[MESG][SORG])
+        return outroutes
+
+    # IGP > EGP > UNK
+    def sortOrigins(self, e):
+        e = e[MESG][ORIG]
+        if e == 'IGP':
+            return 3
+        elif e == 'EGP':
+            return 2
+        else:
+            return 1
 
     def get_origin_routes(self, routes):
         """ select origin routes: IGP > EGP > UNK """
-        # TODO
-        outroutes = []
-        return routes
+        outroutes = routes.copy()
+        outroutes.sort(reverse=True, key=self.sortOrigins)
+        highest = outroutes[0][MESG][ORIG]
+        outroutes = filter(lambda r: r[MESG][ORIG] == highest, outroutes)
+        return outroutes
 
     def filter_relationships(self, srcif, routes):
         """ Don't allow Peer->Peer, Peer->Prov, or Prov->Peer forwards """
@@ -124,7 +143,10 @@ class Router:
             # 4. IGP > EGP > UNK
             routes = self.get_origin_routes(routes)
             # 5. Lowest IP Address
-            # TODO
+            if len(routes) > 1:
+                strRoutes = routes.copy()
+                strRoutes.sort(reverse=True, key=lambda r: int(r[SRCE].replace('.', '')))
+                routes = [strRoutes[0]]
             # Final check: enforce peering relationships
             routes = self.filter_relationships(srcif, routes)
         peer = routes[0]['peer'] if len(routes) != 0 else None
@@ -162,7 +184,8 @@ class Router:
         self.routes.append({
             NTWK: packet[MESG][NTWK],
             NMSK: packet[MESG][NMSK],
-            PEER: packet[SRCE]
+            PEER: packet[SRCE],
+            **packet
         })
         # 3. potentially send copies of the announcement to neighboring routers
         msg = packet
@@ -193,7 +216,12 @@ class Router:
             SRCE:  packet[DEST], 
             DEST:  packet[SRCE], 
             TYPE: TABL,
-            MESG: self.routes
+            MESG: map(lambda r: ({ 
+                NTWK: r[MESG][NTWK],
+                NMSK: r[MESG][NMSK],
+                PEER: r[SRCE],
+                }),
+                self.routes)
         }
         self.sockets[packet[SRCE]].send(json.dumps(msg).encode())
         return True
