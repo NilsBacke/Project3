@@ -157,25 +157,41 @@ class Router:
     def forward(self, srcif, packet):
         # packet is already decoded
         """	Forward a data packet	"""
-        # GEt correct route.
-        sock = self.get_route(srcif, packet[DEST])
-        # If no route available, send to no route message back
-        if sock == None:
+        def send_no_route():
             self.sockets[srcif].send(json.dumps({
                 SRCE: srcif,
                 DEST: packet[SRCE],
                 TYPE: NRTE,
                 MESG: {}
             }).encode())
+        # GEt correct route.
+        sock = self.get_route(srcif, packet[DEST])
+        # If no route available, send to no route message back
+        if sock == None:
+            send_no_route()
         else:
             # If socket is available, send to proper neighbor.
-            sock.send(json.dumps(packet).encode())
+            should_forward = self.relations[srcif] == CUST or self.relations[packet[DEST]] == CUST
+
+            if should_forward:
+                sock.send(json.dumps(packet).encode())
+            else:
+                send_no_route()
         return False
 
     def coalesce(self):
         """	coalesce any routes that are right next to each other	"""
         # TODO (this is the most difficult task, save until last)
         return False
+
+    def update_revoke_neighbors(self, srcif):
+        relation = self.relations[srcif]
+        peer_or_prov = relation == PEER or relation == PROV
+
+        neighbors = self.sockets.keys()
+        if peer_or_prov:
+            neighbors = list(filter(lambda n: self.relations[n] == CUST, neighbors))
+        return neighbors
 
     def update(self, srcif, packet):
         # packet is already decoded
@@ -190,25 +206,7 @@ class Router:
             **packet
         })
         # 3. potentially send copies of the announcement to neighboring routers
-
-        # relation_src = srcif[:-1]
-        # relation_src += '0'
-        relation = self.relations[srcif]
-        peer_or_prov = relation == PEER or relation == PROV
-
-        print('relations')
-        print(self.relations)
-
-        print('peer_or_prov')
-        print(peer_or_prov)
-        neighbors = self.sockets.keys()
-        print('neighbors prior')
-        print(len(neighbors))
-        if peer_or_prov:
-            neighbors = list(filter(lambda n: self.relations[n] == CUST, neighbors))
-
-        print('neighbors post')
-        print(len(neighbors))
+        neighbors = self.update_revoke_neighbors(srcif)
 
         msg = packet
         # Add aspath to update packet.
@@ -243,8 +241,9 @@ class Router:
         # 2. remove entry from forwarding table
         self.routes = list(filter(lambda r: self.revoke_filter(r, packet), self.routes))
         # 3. potentially send copies of the announcement to neighboring routers
+        neighbors = self.update_revoke_neighbors(srcif)
         msg = packet
-        for ip in self.sockets.keys():
+        for ip in neighbors:
             # send to all others
             if ip != srcif:
                 sock = self.sockets[ip]
