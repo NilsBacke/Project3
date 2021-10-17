@@ -83,10 +83,13 @@ class Router:
 
     def get_shortest_as_path(self, routes):
         """ select the route with the shortest AS Path """
-        # TODO
         outroutes = routes.copy()
+        print('right before sort')
+        print(outroutes)
         outroutes.sort(key=lambda r: len(r[MESG][APTH]))
         lowest = outroutes[0][MESG][APTH]
+        print('lowest')
+        print(lowest)
         outroutes = list(filter(lambda r: len(r[MESG][APTH]) == lowest, outroutes))
         print('outroutes in get shortest as path')
         print(outroutes)
