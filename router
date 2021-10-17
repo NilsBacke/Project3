@@ -87,26 +87,6 @@ class Router:
         outroutes = list(filter(lambda r: int(r[NMSK].replace('.', '')) == longest_matching_prefix, outroutes))
         return outroutes
 
-
-        # for entry in self.routes:
-        #     # Parse netmasks to perform masking operations.
-        #     num255 = entry['netmask'].count('255')
-        #     network_split = entry['network'].split('.')
-        #     daddr_split = daddr.split('.')
-        #     is_valid = True
-        #     # Iterate through mask to determine ip matching.
-        #     for i in range(0, num255):
-        #         if network_split[i] != daddr_split[i]:
-        #            is_valid = False
-        #            break
-        #     if is_valid:
-        #         outroutes.append(entry) 
-
-        # outroutes.sort(key=lambda r: r['netmask'].count('255'), reverse=True)
-        # longest_matching_prefix = outroutes[0]['netmask'].count('255')
-        # outroutes = list(filter(lambda r: r['netmask'].count('255') == longest_matching_prefix, outroutes))
-        # return outroutes
-
     def get_shortest_as_path(self, routes):
         """ select the route with the shortest AS Path """
         outroutes = routes.copy()
