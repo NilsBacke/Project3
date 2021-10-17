@@ -157,6 +157,10 @@ class Router:
         """	Forward a data packet	"""
         # GEt correct route.
         sock = self.get_route(srcif, packet[DEST])
+        print("FORWARDING")
+        print(packet)
+        print(sock)
+        print("END FORWARDING")
         # If no route available, send to no route message back
         if sock == None:
             self.sockets[srcif].send(json.dumps({
