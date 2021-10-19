@@ -263,9 +263,9 @@ class Router:
             return result_arr.join('.')
 
         new_routes = []
-        for entry1 in self.routes:
-            for entry2 in self.routes:
-                if entry1[NTWK] != entry2[NTWK] and entry1[NMSK] != entry2[NMSK] and entry1[PEER] != entry2[PEER]:
+        for i, entry1 in enumerate(self.routes):
+            for j, entry2 in enumerate(self.routes):
+                if i != j:
                     if can_be_combined(entry1, entry2):
                         ip = lower_ip(entry1, entry2)
                         netmask = new_netmask(entry1[NMSK])
