@@ -252,7 +252,7 @@ class Router:
             index_of_1_to_drop = section_binary_str.rindex('1')
             binary_array = list(section_binary_str)
             binary_array[index_of_1_to_drop] = '0'
-            new_decimal_as_str = str(int(binary_array.join(''), 2))
+            new_decimal_as_str = str(int(' '.join(binary_array), 2))
 
             result_arr = []
             for i, val in enumerate(split):
