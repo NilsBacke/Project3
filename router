@@ -192,8 +192,12 @@ class Router:
     def coalesce(self, srcif):
         """	coalesce any routes that are right next to each other	"""
         def can_be_combined(entry1, entry2):
+            print('can_be_combined')
+            print(entry1)
+            print(entry2)
             # same netmask
             if entry1[NMSK] != entry2[NMSK]:
+                print(False)
                 return False
 
             # if numerically adjacent
@@ -205,6 +209,7 @@ class Router:
                 diff += abs(int(entry1_split[i]) - int(entry2_split[i]))
             
             if diff != 1:
+                print(False)
                 return False
 
             # forward to the same next hop router
@@ -212,12 +217,15 @@ class Router:
             entry2_next_hop_addr = self.get_route(srcif, entry2[NTWK])
 
             if entry1_next_hop_addr != entry2_next_hop_addr:
+                print(False)
                 return False
 
             # have the same attributes
             if entry1[MESG][LPRF] != entry2[MESG][LPRF] or entry1[MESG][APTH] != entry2[MESG][APTH] or entry1[MESG][ORIG] != entry2[MESG][ORIG] or entry1[MESG][SORG] != entry2[MESG][SORG]:
+                print(False)
                 return False
 
+            print(True)
             return True
 
         def lower_ip(entry1, entry2):
