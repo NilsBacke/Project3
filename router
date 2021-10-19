@@ -250,7 +250,7 @@ class Router:
             section_binary_str = str(bin(int(split[last_section_index_with_value])).replace('0b', ''))
             print(section_binary_str)
             index_of_1_to_drop = section_binary_str.rindex('1')
-            binary_array = section_binary_str.join('')
+            binary_array = section_binary_str.split('')
             binary_array[index_of_1_to_drop] = '0'
             new_decimal_as_str = str(int(binary_array.join(''), 2))
 
