@@ -197,6 +197,7 @@ class Router:
             print(entry2)
             # same netmask
             if entry1[NMSK] != entry2[NMSK]:
+                print('not same netmask')
                 print(False)
                 return False
 
@@ -209,6 +210,7 @@ class Router:
                 diff += abs(int(entry1_split[i]) - int(entry2_split[i]))
             
             if diff != 1:
+                print('not adjacent')
                 print(False)
                 return False
 
@@ -217,11 +219,13 @@ class Router:
             entry2_next_hop_addr = self.get_route(srcif, entry2[NTWK])
 
             if entry1_next_hop_addr != entry2_next_hop_addr:
+                print('not same next hop')
                 print(False)
                 return False
 
             # have the same attributes
             if entry1[MESG][LPRF] != entry2[MESG][LPRF] or entry1[MESG][APTH] != entry2[MESG][APTH] or entry1[MESG][ORIG] != entry2[MESG][ORIG] or entry1[MESG][SORG] != entry2[MESG][SORG]:
+                print('not same attributes')
                 print(False)
                 return False
 
