@@ -206,7 +206,7 @@ class Router:
             entry2_split = entry2[NTWK].split('.')
 
             diff = 0
-            for i in enumerate(entry1_split):
+            for i, val in enumerate(entry1_split):
                 diff += abs(int(entry1_split[i]) - int(entry2_split[i]))
             
             if diff != 1:
@@ -242,7 +242,7 @@ class Router:
             split = netmask.split('.')
             last_section_index_with_value = len(split) - 1
 
-            for i in enumerate(split):
+            for i, val in enumerate(split):
                 if int(split[i]) != 255:
                     last_section_index_with_value = i
                     break
@@ -254,7 +254,7 @@ class Router:
             new_decimal_as_str = str(int(binary_array.join(''), 2))
 
             result_arr = []
-            for i in enumerate(split):
+            for i, val in enumerate(split):
                 if i != last_section_index_with_value:
                     result_arr.append(split[i])
                 else:
