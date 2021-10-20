@@ -263,6 +263,21 @@ class Router:
             
             return '.'.join(result_arr)
 
+        grouped_routes = [] # list of lists
+        for i, entry in enumerate(self.routes):
+            for j, grouped in enumerate(grouped_routes):
+                added_to_group = False
+                for entry_in_group in grouped:
+                    if can_be_combined(entry, entry_in_group):
+                        grouped_routes[j].append(entry)
+                        added_to_group = True
+                        break
+                if not added_to_group:
+                    grouped_routes.append([entry])
+        
+        print(grouped_routes)
+        return
+
         new_routes = []
         for i, entry1 in enumerate(self.routes):
             for j, entry2 in enumerate(self.routes):
