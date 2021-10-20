@@ -291,6 +291,8 @@ class Router:
 
         new_routes = []
         for group in grouped_routes:
+            if len(group) < 2:
+                continue
             # each group can be combined
             ip = lowest_ip(group)
             netmask = new_netmask(group[0][NMSK])
