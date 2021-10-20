@@ -238,7 +238,7 @@ class Router:
                 if num < min:
                     min = num
                     min_index = i
-            return entries[min_index]
+            return entries[min_index][NTWK]
 
         def new_netmask(netmask):
             split = netmask.split('.')
@@ -304,8 +304,8 @@ class Router:
                     NMSK: netmask,
                 }
             })
-            # for entry in group:
-            #     self.routes.remove(entry)
+            for entry in group:
+                self.routes.remove(entry)
 
         self.routes.extend(new_routes)
 
