@@ -268,8 +268,10 @@ class Router:
             
             return '.'.join(result_arr)
 
+        unmodified_routes = self.rebuild_table_from_updates()
+
         grouped_routes = [] # list of lists
-        for i, entry in enumerate(self.routes):
+        for i, entry in enumerate(unmodified_routes):
             if len(grouped_routes) == 0:
                 grouped_routes.append([entry])
                 continue
@@ -292,6 +294,7 @@ class Router:
         new_routes = []
         for group in grouped_routes:
             if len(group) < 2:
+                new_routes.append(group[0])
                 continue
             # each group can be combined
             ip = lowest_ip(group)
@@ -309,10 +312,10 @@ class Router:
                     NMSK: netmask,
                 }
             })
-            for entry in group:
-                self.routes.remove(entry)
+            # for entry in group:
+            #     self.routes.remove(entry)
 
-        self.routes.extend(new_routes)
+        self.routes = new_routes
 
     def update_revoke_neighbors(self, srcif):
         relation = self.relations[srcif]
@@ -322,6 +325,17 @@ class Router:
         if peer_or_prov:
             neighbors = list(filter(lambda n: self.relations[n] == CUST, neighbors))
         return neighbors
+
+    def rebuild_table_from_updates(self):
+        routes = []
+        for update in self.updates:
+            routes.append({
+                NTWK: update[MESG][NTWK],
+                NMSK: update[MESG][NMSK],
+                PEER: update[SRCE],
+                **update
+            })
+        return routes
 
     def update(self, srcif, packet):
         # packet is already decoded
