@@ -282,6 +282,9 @@ class Router:
                 grouped_routes.append([entry])
             else:
                 grouped_routes[matching_group_index].append(entry)
+        
+        print('grouped_routes')
+        print(grouped_routes)
 
         new_routes = []
         for group in grouped_routes:
