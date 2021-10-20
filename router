@@ -265,6 +265,8 @@ class Router:
 
         grouped_routes = [] # list of lists
         for i, entry in enumerate(self.routes):
+            if len(grouped_routes) == 0:
+                grouped_routes.append([entry])
             for j, grouped in enumerate(grouped_routes):
                 added_to_group = False
                 for entry_in_group in grouped:
