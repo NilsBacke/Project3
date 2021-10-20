@@ -193,8 +193,6 @@ class Router:
         """	coalesce any routes that are right next to each other	"""
         def can_be_combined(entry1, entry2):
             print('can_be_combined')
-            print(entry1)
-            print(entry2)
             # same netmask
             if entry1[NMSK] != entry2[NMSK]:
                 print('not same netmask')
@@ -232,11 +230,13 @@ class Router:
             print(True)
             return True
 
-        def lower_ip(entry1, entry2):
-            num1 = int(entry1[NTWK].replace('.', ''))
-            num2 = int(entry2[NTWK].replace('.', ''))
-            entry_1_is_lower = num1 < num2
-            return entry1[NTWK] if entry_1_is_lower else entry2[NTWK]
+        def lowest_ip(entries):
+            min = float('inf')
+            for entry in entries:
+                num = int(entry[NTWK].replace('.', ''))
+                if num < min:
+                    min = num
+            return min
 
         def new_netmask(netmask):
             split = netmask.split('.')
@@ -279,32 +279,27 @@ class Router:
                 grouped_routes.append([entry])
             else:
                 grouped_routes[matching_group_index].append(entry)
-        
-        print(grouped_routes)
-        return
 
         new_routes = []
-        for i, entry1 in enumerate(self.routes):
-            for j, entry2 in enumerate(self.routes):
-                if i != j:
-                    if can_be_combined(entry1, entry2):
-                        ip = lower_ip(entry1, entry2)
-                        netmask = new_netmask(entry1[NMSK])
-                        new_routes.append({
-                            NTWK: ip,
-                            NMSK: netmask,
-                            PEER: entry1[PEER],
-                            TYPE: 'update',
-                            SRCE: entry1[SRCE],
-                            DEST: entry1[DEST],
-                            MESG: {
-                                **entry1[MESG],
-                                NTWK: ip,
-                                NMSK: netmask,
-                            }
-                        })
-                        self.routes.remove(entry1)
-                        self.routes.remove(entry2)
+        for group in grouped_routes:
+            # each group can be combined
+            ip = lowest_ip(group)
+            netmask = new_netmask(group[0][NMSK])
+            new_routes.append({
+                NTWK: ip,
+                NMSK: netmask,
+                PEER: group[0][PEER],
+                TYPE: 'update',
+                SRCE: group[0][SRCE],
+                DEST: group[0][DEST],
+                MESG: {
+                    **group[0][MESG],
+                    NTWK: ip,
+                    NMSK: netmask,
+                }
+            })
+            for entry in group:
+                self.routes.remove(entry)
 
         self.routes.extend(new_routes)
 
