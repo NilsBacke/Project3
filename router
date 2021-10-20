@@ -232,11 +232,13 @@ class Router:
 
         def lowest_ip(entries):
             min = float('inf')
-            for entry in entries:
+            min_index = 0
+            for i, entry in enumerate(entries):
                 num = int(entry[NTWK].replace('.', ''))
                 if num < min:
                     min = num
-            return min
+                    min_index = i
+            return entries[min_index]
 
         def new_netmask(netmask):
             split = netmask.split('.')
