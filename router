@@ -269,7 +269,7 @@ class Router:
         for i, entry in enumerate(self.routes):
             if len(grouped_routes) == 0:
                 grouped_routes.append([entry])
-                break
+                continue
 
             matching_group_index = -1
             for j, grouped in enumerate(grouped_routes):
