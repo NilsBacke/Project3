@@ -315,6 +315,10 @@ class Router:
             # for entry in group:
             #     self.routes.remove(entry)
 
+        print('self.routes')
+        print(self.routes)
+        print('new_routes')
+        print(new_routes)
         self.routes = new_routes
 
     def update_revoke_neighbors(self, srcif):
