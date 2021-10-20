@@ -80,7 +80,10 @@ class Router:
                     is_valid = False
                     break
             if is_valid:
-                outroutes.append(entry) 
+                outroutes.append(entry)
+
+        if len(outroutes) == 0:
+            return outroutes
 
         outroutes.sort(key=lambda r: int(r[NMSK].replace('.', '')), reverse=True)
         longest_matching_prefix = int(outroutes[0][NMSK].replace('.', ''))
