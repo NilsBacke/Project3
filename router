@@ -165,7 +165,7 @@ class Router:
                 routes = [strRoutes[0]]
             # Final check: enforce peering relationships
             routes = self.filter_relationships(srcif, routes)
-        peer = routes[0]['peer'] if len(routes) != 0 else None
+        peer = routes[0][PEER] if len(routes) != 0 else None
         return peer if peer else None
 
     def forward(self, srcif, packet):
@@ -183,7 +183,7 @@ class Router:
         # GEt correct route.
         sock_addr = self.get_route(srcif, packet[DEST])
 
-        # If no route available, send to no route message back
+        # If no route available, send no route message back
         if sock_addr == None:
             send_no_route()
         else:
@@ -268,10 +268,8 @@ class Router:
             
             return '.'.join(result_arr)
 
-        unmodified_routes = self.rebuild_table_from_updates()
-
         grouped_routes = [] # list of lists
-        for i, entry in enumerate(unmodified_routes):
+        for i, entry in enumerate(self.updates):
             if len(grouped_routes) == 0:
                 grouped_routes.append([entry])
                 continue
@@ -330,29 +328,21 @@ class Router:
             neighbors = list(filter(lambda n: self.relations[n] == CUST, neighbors))
         return neighbors
 
-    def rebuild_table_from_updates(self):
-        routes = []
-        for update in self.updates:
-            routes.append({
-                NTWK: update[MESG][NTWK],
-                NMSK: update[MESG][NMSK],
-                PEER: update[SRCE],
-                **update
-            })
-        return routes
-
     def update(self, srcif, packet):
         # packet is already decoded
         """	handle update packets	"""
-        # 1. save a copy of the announcement in case you need it later
-        self.updates.append(packet)
         # 2. add an entry to your forwarding table
-        self.routes.append({
+        new_route = {
             NTWK: packet[MESG][NTWK],
             NMSK: packet[MESG][NMSK],
             PEER: packet[SRCE],
             **packet
-        })
+        }
+        self.routes.append(new_route)
+
+        # 1. save a copy of the announcement in case you need it later
+        self.updates.append(new_route)
+
         # 3. potentially send copies of the announcement to neighboring routers
         neighbors = self.update_revoke_neighbors(srcif)
 
