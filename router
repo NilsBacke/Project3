@@ -195,11 +195,8 @@ class Router:
     def coalesce(self, srcif):
         """	coalesce any routes that are right next to each other	"""
         def can_be_combined(entry1, entry2):
-            print('can_be_combined')
             # same netmask
             if entry1[NMSK] != entry2[NMSK]:
-                print('not same netmask')
-                print(False)
                 return False
 
             # if numerically adjacent
@@ -211,8 +208,6 @@ class Router:
                 diff += abs(int(entry1_split[i]) - int(entry2_split[i]))
             
             if diff != 1:
-                print('not adjacent')
-                print(False)
                 return False
 
             # forward to the same next hop router
@@ -220,17 +215,12 @@ class Router:
             entry2_next_hop_addr = self.get_route(srcif, entry2[NTWK])
 
             if entry1_next_hop_addr != entry2_next_hop_addr:
-                print('not same next hop')
-                print(False)
                 return False
 
             # have the same attributes
             if entry1[MESG][LPRF] != entry2[MESG][LPRF] or entry1[MESG][APTH] != entry2[MESG][APTH] or entry1[MESG][ORIG] != entry2[MESG][ORIG] or entry1[MESG][SORG] != entry2[MESG][SORG]:
-                print('not same attributes')
-                print(False)
                 return False
 
-            print(True)
             return True
 
         def lowest_ip(entries):
@@ -264,7 +254,7 @@ class Router:
             new_decimal_as_str = str(int(''.join(binary_array), 2))
 
             result_arr = []
-            for i, val in enumerate(split):
+            for i, _ in enumerate(split):
                 if i != last_section_index_with_value:
                     result_arr.append(split[i])
                 else:
@@ -289,9 +279,6 @@ class Router:
                 grouped_routes.append([entry])
             else:
                 grouped_routes[matching_group_index].append(entry)
-        
-        print('grouped_routes')
-        print(grouped_routes)
 
         new_routes = []
         for group in grouped_routes:
@@ -314,13 +301,7 @@ class Router:
                     NMSK: netmask,
                 }
             })
-            # for entry in group:
-            #     self.routes.remove(entry)
 
-        print('self.routes')
-        print(self.routes)
-        print('new_routes')
-        print(new_routes)
         self.routes = new_routes
 
     def update_revoke_neighbors(self, srcif):
@@ -431,12 +412,6 @@ class Router:
             self.revoke(srcif, packet)
         return True
 
-    def send_error(self, conn, msg):
-        """ Send a no_route error message """
-        # TODO
-        print('generic error')
-        return
-
     def run(self):
         while True:
             # Read all sockets to read incoming data.
@@ -453,9 +428,8 @@ class Router:
                         if self.sockets[sock] == conn:
                             srcif = sock
                     msg = json.loads(k)
-                    # Send error if packet caused an error.
-                    if not self.handle_packet(srcif, msg):
-                        self.send_error(conn, msg)
+                    
+                    self.handle_packet(srcif, msg)
                 else:
                     return
         return
