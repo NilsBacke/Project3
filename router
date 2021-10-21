@@ -214,9 +214,10 @@ class Router:
                         print('getting removed')
                         print(update[MESG][0][NTWK])
                         indicies_to_remove.append(i)
+                        break
                     else:
                         print('else update')
-                        print(update)
+                        print(x)
             else:
                 result.append(update)
 
