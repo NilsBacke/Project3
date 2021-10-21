@@ -408,6 +408,8 @@ class Router:
         print(self.updates)
         # 2. remove entry from forwarding table
         self.coalesce(srcif)
+        print('self.updates')
+        print(self.updates)
         # 3. potentially send copies of the announcement to neighboring routers
         neighbors = self.update_revoke_neighbors(srcif)
         msg = packet
