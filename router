@@ -423,6 +423,8 @@ class Router:
                 except Exception as e:
                     print(e)
         
+        print('self.updates')
+        print(self.updates)
         return True
 
     def dump(self, packet):
