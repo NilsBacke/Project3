@@ -400,12 +400,12 @@ class Router:
         return is_valid
     
     def revoke(self, srcif, packet):
-        print('self.updates')
-        print(self.updates)
         """	handle revoke packets	"""
         # packet is already decoded
         # 1. save a copy of the revoke announcement in case you need it later
         self.updates.append(packet)
+        print('self.updates')
+        print(self.updates)
         # 2. remove entry from forwarding table
         self.coalesce(srcif)
         # 3. potentially send copies of the announcement to neighboring routers
