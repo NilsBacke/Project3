@@ -197,6 +197,8 @@ class Router:
         for update in self.updates:
             if update[TYPE] == 'revoke':
                 # filter out the update that was revoked
+                print('update')
+                print(update)
                 result = list(filter(lambda x: update[MESG][NTWK] != x[MESG][NTWK] or update[MESG][NMSK] != x[MESG][NMSK], result))
             else:
                 result.append(update)
