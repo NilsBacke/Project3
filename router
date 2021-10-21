@@ -218,6 +218,8 @@ class Router:
                     else:
                         print('else update')
                         print(x)
+                        print('the revoke')
+                        print(update)
             else:
                 result.append(update)
 
