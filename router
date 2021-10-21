@@ -390,6 +390,7 @@ class Router:
                     sock.send(json.dumps(msg).encode())
                 except Exception as e:
                     print(e)
+        self.coalesce(srcif)
         return True
 
     def dump(self, packet):
