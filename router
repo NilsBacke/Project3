@@ -210,7 +210,7 @@ class Router:
                 # filter out the update that was revoked
                 print('saw revoke')
                 for i, x in enumerate(result):
-                    if update[MESG][0][NTWK] != x[MESG][NTWK] or update[MESG][0][NMSK] != x[MESG][NMSK] or update[SRCE] != x[SRCE]:
+                    if update[MESG][0][NTWK] == x[MESG][NTWK] and update[MESG][0][NMSK] == x[MESG][NMSK] and update[SRCE] == x[SRCE]:
                         print('getting removed')
                         print(update[MESG][0][NTWK])
                         indicies_to_remove.append(i)
