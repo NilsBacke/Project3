@@ -200,6 +200,7 @@ class Router:
                 result = list(filter(lambda x: update[MESG][NTWK] != x[MESG][NTWK] or update[MESG][NMSK] != x[MESG][NMSK], result))
             else:
                 result.append(update)
+        print(result)
         return result
 
     def coalesce(self, srcif):
