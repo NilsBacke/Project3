@@ -67,12 +67,16 @@ class Router:
         """ Lookup all valid routes for an address """
         outroutes = []
         for entry in self.routes:
+            # split netmask and daddr by the IP dots
             netmask_split = entry[NMSK].split('.')
             daddr_split = daddr.split('.')
+
+            # bitwise ANd the netmask with the daddr
             result = []
             for i in range(0, len(netmask_split)):
                 result.append(str(int(netmask_split[i]) & int(daddr_split[i])))
             
+            # compare ANDed result to the network
             is_valid = True
             network_split = entry[NTWK].split('.')
             for i in range(0, len(network_split)):
@@ -85,6 +89,7 @@ class Router:
         if len(outroutes) == 0:
             return outroutes
 
+        # reform IP address
         outroutes.sort(key=lambda r: int(r[NMSK].replace('.', '')), reverse=True)
         longest_matching_prefix = int(outroutes[0][NMSK].replace('.', ''))
         outroutes = list(filter(lambda r: int(r[NMSK].replace('.', '')) == longest_matching_prefix, outroutes))
@@ -92,6 +97,7 @@ class Router:
 
     def get_shortest_as_path(self, routes):
         """ select the route with the shortest AS Path """
+        # filter out any routes that don't have the shortest AS path
         outroutes = routes.copy()
         outroutes.sort(key=lambda r: len(r[MESG][APTH]))
         lowest = len(outroutes[0][MESG][APTH])
@@ -100,6 +106,7 @@ class Router:
             
     def get_highest_preference(self, routes):
         """ select the route with the highest localPref """
+        # filter out any routes that don't have the highest localPref
         outroutes = routes.copy()
         outroutes.sort(reverse=True, key=lambda r: r[MESG][LPRF])
         highest = outroutes[0][MESG][LPRF]
@@ -108,6 +115,7 @@ class Router:
          
     def get_self_origin(self, routes):
         """ select self originating routes """
+        # filter out any routes that don't have self origin
         outroutes = routes.copy()
         outroutes = list(filter(lambda r: r[MESG][SORG], outroutes))
         # handle edge case if all outroutes' selfOrigin is false
@@ -127,6 +135,7 @@ class Router:
 
     def get_origin_routes(self, routes):
         """ select origin routes: IGP > EGP > UNK """
+        # filter out any routes that don't have the highest precedence origin
         outroutes = routes.copy()
         outroutes.sort(reverse=True, key=self.sortOrigins)
         highest = outroutes[0][MESG][ORIG]
@@ -160,6 +169,7 @@ class Router:
             routes = self.get_origin_routes(routes)
             # 5. Lowest IP Address
             if len(routes) > 1:
+                # split into each IP section and get the lowest IP
                 strRoutes = routes.copy()
                 strRoutes.sort(key=lambda r: int(r[SRCE].replace('.', '')))
                 routes = [strRoutes[0]]
@@ -234,6 +244,7 @@ class Router:
             return True
 
         def lowest_ip(entries):
+            # get the lowest IP of all the given entries
             min = float('inf')
             min_index = 0
             for i, entry in enumerate(entries):
@@ -246,6 +257,7 @@ class Router:
         def new_netmask(entries):
             netmask = entries[0][NMSK]
             split = netmask.split('.')
+            # last_section_index_with_value is the last section of the IP with a non-zero value
             last_section_index_with_value = len(split) - 1
 
             for i, val in enumerate(split):
@@ -253,31 +265,38 @@ class Router:
                     break
                 last_section_index_with_value = i
 
+            # a string of binary for the last_section_index_with_value section
             section_binary_str = str(bin(int(split[last_section_index_with_value])).replace('0b', ''))
 
+            # replace the last sqrt of length of entries of 1's with 0's
             for _ in range(0, int(math.sqrt(len(entries)))):
                 index_of_1_to_drop = section_binary_str.rindex('1')
                 binary_array = list(section_binary_str)
                 binary_array[index_of_1_to_drop] = '0'
                 section_binary_str = ''.join(binary_array)
 
+            # rebuild the modified binary
             new_decimal_as_str = str(int(''.join(binary_array), 2))
 
             result_arr = []
+            # rebuild the whole IP address
             for i, _ in enumerate(split):
                 if i != last_section_index_with_value:
                     result_arr.append(split[i])
                 else:
                     result_arr.append(new_decimal_as_str)
             
+            # join the IP by dots
             return '.'.join(result_arr)
 
+        # make grouping of routes that can be combined
         grouped_routes = [] # list of lists
         for entry in self.get_correct_updates_list():
             if len(grouped_routes) == 0:
                 grouped_routes.append([entry])
                 continue
 
+            # form the groups, if an entry can be combined with another group, add it to the group
             matching_group_index = -1
             for j, grouped in enumerate(grouped_routes):
                 for entry_in_group in grouped:
@@ -285,12 +304,14 @@ class Router:
                         matching_group_index = j
                         break
 
+            # otherwise, create a new group with that entry
             if matching_group_index == -1:
                 grouped_routes.append([entry])
             else:
                 grouped_routes[matching_group_index].append(entry)
 
         new_routes = []
+        # combine all routes in each group
         for group in grouped_routes:
             if len(group) < 2:
                 new_routes.append(group[0])
@@ -312,9 +333,11 @@ class Router:
                 }
             })
 
+        # replace the routes list
         self.routes = new_routes
 
     def update_revoke_neighbors(self, srcif):
+        # get list of neighbors that we should send update/revokes to
         relation = self.relations[srcif]
         peer_or_prov = relation == PEER or relation == PROV
 
