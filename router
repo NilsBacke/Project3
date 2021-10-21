@@ -389,15 +389,6 @@ class Router:
 
         self.coalesce(srcif)
         return True
-
-    def revoke_filter(self, item, packet):
-        is_valid = True
-        for msg in packet[MESG]:
-            if msg[NTWK] == item[NTWK] and msg[NMSK] == item[NMSK] and packet[SRCE] == item[SRCE]:
-                # matches revoke message, remove from forwarding table
-                is_valid = False
-                break
-        return is_valid
     
     def revoke(self, srcif, packet):
         """	handle revoke packets	"""
