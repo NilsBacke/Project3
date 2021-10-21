@@ -192,6 +192,16 @@ class Router:
             sock.send(json.dumps(packet).encode())
         return False
 
+    def get_correct_updates_list(self):
+        result = []
+        for update in self.updates:
+            if update[TYPE] == 'revoke':
+                # filter out the update that was revoked
+                result = list(filter(lambda x: update[MESG][NTWK] != x[MESG][NTWK] or update[MESG][NMSK] != x[MESG][NMSK], result))
+            else:
+                result.append(update)
+        return result
+
     def coalesce(self, srcif):
         """	coalesce any routes that are right next to each other	"""
         def can_be_combined(entry1, entry2):
@@ -263,7 +273,7 @@ class Router:
             return '.'.join(result_arr)
 
         grouped_routes = [] # list of lists
-        for i, entry in enumerate(self.updates):
+        for entry in self.get_correct_updates_list():
             if len(grouped_routes) == 0:
                 grouped_routes.append([entry])
                 continue
