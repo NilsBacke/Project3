@@ -397,7 +397,7 @@ class Router:
         # 1. save a copy of the revoke announcement in case you need it later
         self.updates.append(packet)
         # 2. remove entry from forwarding table
-        # self.routes = list(filter(lambda r: self.revoke_filter(r, packet), self.routes))
+        self.routes = list(filter(lambda r: self.revoke_filter(r, packet), self.routes))
         self.coalesce(srcif)
         # 3. potentially send copies of the announcement to neighboring routers
         neighbors = self.update_revoke_neighbors(srcif)
