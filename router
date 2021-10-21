@@ -205,21 +205,22 @@ class Router:
     def get_correct_updates_list(self):
         result = []
         indicies_to_remove = []
-        for update in self.updates:
+        for update in self.updates.copy():
             if update[TYPE] == RVKE:
                 # filter out the update that was revoked
                 print('saw revoke')
                 for i, x in enumerate(result):
-                    if update[MESG][0][NTWK] == x[MESG][NTWK] and update[MESG][0][NMSK] == x[MESG][NMSK] and update[SRCE] == x[SRCE]:
-                        print('getting removed')
-                        print(update[MESG][0][NTWK])
-                        indicies_to_remove.append(i)
-                        break
-                    else:
-                        print('else update')
-                        print(x)
-                        print('the revoke')
-                        print(update)
+                    for msg in update[MESG]:
+                        if msg[NTWK] == x[MESG][NTWK] and msg[NMSK] == x[MESG][NMSK] and update[SRCE] == x[SRCE]:
+                            print('getting removed')
+                            print(msg[NTWK])
+                            indicies_to_remove.append(i)
+                            break
+                        else:
+                            print('else update')
+                            print(x)
+                            print('the revoke')
+                            print(update)
             else:
                 result.append(update)
 
@@ -407,6 +408,8 @@ class Router:
         return is_valid
     
     def revoke(self, srcif, packet):
+        print('revoke packet')
+        print(packet)
         """	handle revoke packets	"""
         # packet is already decoded
         # 1. save a copy of the revoke announcement in case you need it later
